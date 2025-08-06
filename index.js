@@ -74,10 +74,10 @@ client.on('messageCreate', (message) => {
     message.reply({
       embeds: [{
         title: '**Jailbreak Sunucumuzun IP Adresi**',
-        description: '```🖥️ IP: connect 185.193.165.109```',
+        description: '```🖥️ IP: connect 185.193.165.11```',
         color: 0x2F3136,
         footer: {
-          text: 'Nova Durum'
+          text: 'Revolt Durum'
         }
       }]
     });
@@ -86,3 +86,4 @@ client.on('messageCreate', (message) => {
 
 // Token ile giriş
 client.login(process.env.TOKEN);
+
