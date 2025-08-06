@@ -1,17 +1,16 @@
-import { Client, GatewayIntentBits, Partials } from 'discord.js';
 import express from 'express';
+import { Client, GatewayIntentBits, Partials } from 'discord.js';
 import Gamedig from 'gamedig';
 import dotenv from 'dotenv';
-
 dotenv.config();
 
-// Express Sunucusu (UptimeRobot için)
+// UPTIME: Express server (Render/Heroku/UptimeRobot için)
 const app = express();
-const port = process.env.PORT || 3000;
-app.get('/', (req, res) => res.send('Bot Aktif!'));
-app.listen(port, () => console.log(`Express çalışıyor: http://localhost:${port}`));
+const PORT = process.env.PORT || 3000;
+app.get('/', (req, res) => res.send('Bot Aktif'));
+app.listen(PORT, () => console.log(`Uptime portu: ${PORT}`));
 
-// Discord Bot Tanımı
+// Discord bot istemcisi
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -21,69 +20,45 @@ const client = new Client({
   partials: [Partials.Channel]
 });
 
-// Oyun sunucu bilgileri
-const SERVER_IP = '185.193.165.109';
-const SERVER_PORT = 27015;
+client.once('ready', () => {
+  console.log(`Bot giriş yaptı: ${client.user.tag}`);
+  updateStatus(); // İlk çalıştır
+  setInterval(updateStatus, 5000); // Her 5 saniyede bir güncelle
+});
 
-// Sunucu durumunu Discord'daki botun durumuna yaz
 async function updateStatus() {
   try {
     const state = await Gamedig.query({
-      type: 'csgo',
-      host: SERVER_IP,
-      port: SERVER_PORT
+      type: 'csgo', // CS2 yerine 'csgo' kullanılıyor
+      host: '185.193.165.11',
+      port: 27015
     });
 
-    const playerCount = state.players.length;
+    const players = state.players.length;
     const maxPlayers = state.maxplayers;
     const map = state.map;
+    const statusText = `🎯 ${players}/${maxPlayers} | ${map} haritasında yarışıyor`;
 
-    client.user.setPresence({
-      activities: [{
-        name: `🎯 ${playerCount}/${maxPlayers} | ${map}`,
-        type: 0
-      }],
-      status: 'online'
-    });
+    client.user.setActivity(statusText, { type: 0 });
   } catch (error) {
     console.log('Sunucuya ulaşılamadı:', error.message);
-    client.user.setPresence({
-      activities: [{
-        name: '🎯 Sunucu Kapalı',
-        type: 0
-      }],
-      status: 'idle'
-    });
   }
 }
 
-// Bot hazır olduğunda çalış
-client.once('ready', () => {
-  console.log(`Bot giriş yaptı: ${client.user.tag}`);
-  updateStatus();
-  setInterval(updateStatus, 5000); // 5 saniyede bir güncelle
-});
-
-// Komut dinleyici (!ip)
+// !ip komutu
 client.on('messageCreate', (message) => {
-  if (message.author.bot) return;
-
-  const command = message.content.toLowerCase();
-
-  if (command === '!ip') {
+  if (message.content === '!ip') {
     message.reply({
       embeds: [{
-        title: '**Jailbreak Sunucumuzun IP Adresi**',
-        description: '```🖥️ IP: connect 185.193.165.11```',
-        color: 0x2F3136,
-        footer: {
-          text: 'Revolt Durum'
-        }
+        title: 'Jailbreak Sunucumuzun IP Adresi',
+        description: '**`📌 IP:`**  `connect 185.193.165.11:27015`',
+        image: {
+          url: 'https://cdn.discordapp.com/attachments/1137360272441894962/1247518471491999774/37a31064-ae2d-46a9-9719-b8f72f5ac25c.png?ex=666f13d1&is=666dc251&hm=9e4f785b0c2755b2db1c258f5dd70aabfa2e81e10df25b7ff0210aa9f021d37f&' // senin gönderdiğin görsel
+        },
+        color: 0x00ff99
       }]
     });
   }
 });
 
-// Token ile giriş
 client.login(process.env.TOKEN);
-
