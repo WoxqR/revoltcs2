@@ -19,7 +19,7 @@ const client = new Client({
 
 const serverIP = '185.193.165.11';
 const serverPort = 27015;
-const sunucuMap = 'jb_revolt_piramit';
+const sunucuMap = 'jb_nova_piramit';
 
 const DISCORD_TOKEN = process.env.TOKEN;
 
@@ -57,3 +57,4 @@ async function updateStatus() {
 }
 
 client.login(DISCORD_TOKEN);
+
