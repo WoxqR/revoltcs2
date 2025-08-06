@@ -1,20 +1,19 @@
 import express from 'express';
 import { Client, GatewayIntentBits, ActivityType } from 'discord.js';
-import Gamedig from 'gamedig';
+import { GameDig } from 'gamedig';  // Doğru kullanım burada
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Render & UptimeRobot için basit web sunucusu
+// Render ve UptimeRobot için ping endpoint
 app.get('/', (req, res) => {
   res.send('Bot çalışıyor!');
 });
-
 app.listen(PORT, () => {
-  console.log(`UptimeRobot için Express sunucusu ${PORT} portunda aktif.`);
+  console.log(`Express sunucusu ${PORT} portunda aktif.`);
 });
 
-// Discord bot başlat
+// Discord bot istemcisi
 const client = new Client({
   intents: [GatewayIntentBits.Guilds]
 });
@@ -27,8 +26,8 @@ client.once('ready', () => {
 
   setInterval(async () => {
     try {
-      const state = await Gamedig.query({
-        type: 'csgo', // CS2 henüz desteklenmiyor
+      const state = await GameDig.query({
+        type: 'csgo',
         host: IP,
         port: PORT_GAME,
       });
