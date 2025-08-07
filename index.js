@@ -99,7 +99,7 @@ client.on('interactionCreate', async (interaction) => {
       const map = state.map;
 
       await interaction.reply({
-        content: `@everyone\n<a:KonfetiGif:1346882004460765286> **Sunucumuz Aktif!** <a:KonfetiGif:1346882004460765286>\n***__Sunucumuz aktif durumuna geçmiş bulunmaktadır. Tüm oyuncularımızı servera bekliyoruz.__***\n\n<:1338171592655769610:1346749490106994699>・ **IP:** \`connect 185.193.165.11:27015\`\n🗺️ ・ **Harita:** \`${map}\`\n<:1200799093451145246:1346749474357121037> ・ **Aktif Oyuncu Sayısı:** \`${players}/${maxPlayers}\`\n\nhttps://cdn.discordapp.com/attachments/1379099449401278464/1402737267264454779/static.png`,
+        content: `@everyone\n<a:KonfetiGif:1346882004460765286> **Sunucumuz Aktif!** <a:KonfetiGif:1346882004460765286>\n***__Sunucumuz aktif durumuna geçmiş bulunmaktadır. Tüm oyuncularımızı servera bekliyoruz.__***\n・ **IP:** \`connect 185.193.165.11:27015\`\n🗺️ ・ **Harita:** \`${map}\`\n ・ **Aktif Oyuncu Sayısı:** \`${players}/${maxPlayers}\`\n\nhttps://cdn.discordapp.com/attachments/1400365334162309140/1402934398197698570/static_1.png?ex=6895b7f9&is=68946679&hm=f465bed7d2f9efe361b6ceddb844d701924bcde59ba4ff05a417ada5dbcd6931&`,
         allowedMentions: { parse: ['everyone'] }
       });
     } catch (error) {
@@ -112,3 +112,4 @@ client.on('interactionCreate', async (interaction) => {
 });
 
 client.login(process.env.TOKEN);
+
