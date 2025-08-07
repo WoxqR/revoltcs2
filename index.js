@@ -86,7 +86,7 @@ client.on('interactionCreate', async interaction => {
   if (!interaction.isChatInputCommand()) return;
 
   if (interaction.commandName === 'aktif') {
-    const allowedRoleId = 'ROL_ID_HERE'; // 🔁 BU SATIRI KENDİ ROL ID'N İLE DEĞİŞTİR
+    const allowedRoleId = '1400365334153662530'; // 🔁 BU SATIRI KENDİ ROL ID'N İLE DEĞİŞTİR
 
     if (!interaction.member.roles.cache.has(allowedRoleId)) {
       return interaction.reply({
@@ -96,15 +96,16 @@ client.on('interactionCreate', async interaction => {
     }
 
     await interaction.reply({
-      content: `@everyone\n<a:KonfetiGif:1346882004460765286> **Sunucumuz Aktif!** <a:KonfetiGif:1346882004460765286>\n` +
+      content: `@everyone\n<a:tada:1346882004460765286> **Sunucumuz Aktif!** <a:tada:1346882004460765286>\n` +
                `***__Sunucumuz aktif durumuna geçmiş bulunmaktadır. Tüm oyuncularımızı servera bekliyoruz.__***\n\n` +
-               `<:1338171592655769610:1346749490106994699>・ **IP:** \`connect 185.193.165.11:27015\`\n` +
+               ` ・ **IP:** \`connect 185.193.165.11:27015\`\n` +
                `🗺️ ・ **Harita:** \`jb_revolt_piramit\`\n` +
-               `<:1200799093451145246:1346749474357121037> ・ **Aktif Oyuncu Sayısı:** \`1/32\`\n\n` +
-               `https://cdn.discordapp.com/attachments/1379099449401278464/1402737267264454779/static.png`,
+               ` ・ **Aktif Oyuncu Sayısı:** \`1/32\`\n\n` +
+               `https://cdn.discordapp.com/attachments/1400365334162309140/1402934398197698570/static_1.png?ex=6895b7f9&is=68946679&hm=f465bed7d2f9efe361b6ceddb844d701924bcde59ba4ff05a417ada5dbcd6931&`,
       allowedMentions: { parse: ['everyone'] }
     });
   }
 });
 
 client.login(process.env.TOKEN);
+
