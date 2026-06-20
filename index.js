@@ -4,13 +4,19 @@ import Gamedig from 'gamedig';
 import dotenv from 'dotenv';
 dotenv.config();
 
-// UPTIME (Render/UptimeRobot)
+// ===== SUNUCU AYARLARI =====
+const SERVER_HOST = '185.193.165.33';
+const SERVER_PORT = 27015;
+const SERVER_IP_TEXT = `${SERVER_HOST}:${SERVER_PORT}`;
+const BOT_NAME = 'Nova';
+
+// ===== UPTIME (Render/UptimeRobot) =====
 const app = express();
 const PORT = process.env.PORT || 3000;
-app.get('/', (req, res) => res.send('Bot Aktif'));
+app.get('/', (req, res) => res.send(`${BOT_NAME} Aktif`));
 app.listen(PORT, () => console.log(`Uptime portu: ${PORT}`));
 
-// Discord bot istemcisi
+// ===== Discord bot istemcisi =====
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -21,67 +27,65 @@ const client = new Client({
 });
 
 client.once('ready', async () => {
-  console.log(`Bot giriş yaptı: ${client.user.tag}`);
+  console.log(`${BOT_NAME} giriş yaptı: ${client.user.tag}`);
   updateStatus();
-  setInterval(updateStatus, 5000);
+  setInterval(updateStatus, 30000); // 5sn -> 30sn (Discord rate limit'e takılmamak için)
   await registerSlashCommand();
 });
 
-// Durumu güncelleyen fonksiyon
+// ===== Durumu güncelleyen fonksiyon =====
 async function updateStatus() {
   try {
     const state = await Gamedig.query({
       type: 'csgo',
-      host: '185.193.165.33',
-      port: 27015
+      host: SERVER_HOST,
+      port: SERVER_PORT
     });
-
     const players = state.players.length;
     const maxPlayers = state.maxplayers;
     const map = state.map;
     const statusText = `🎯 ${players}/${maxPlayers} | ${map} haritasında oynanıyor`;
-
     client.user.setActivity(statusText, { type: 0 });
   } catch (error) {
     console.log('Sunucuya ulaşılamadı:', error.message);
+    client.user.setActivity('🔴 Sunucu kapalı', { type: 0 });
   }
 }
 
-// !ip komutu
+// ===== !ip komutu =====
 client.on('messageCreate', (message) => {
+  if (message.author.bot) return;
   if (message.content === '!ip') {
     message.reply({
       embeds: [
         {
           title: 'Jailbreak Sunucumuzun IP Adresi',
-          description: '**`📌 IP:`**  `connect 185.193.165.33:27015`',
+          description: `**\`📌 IP:\`**  \`connect ${SERVER_IP_TEXT}\``,
           image: {
             url: 'https://cdn.discordapp.com/attachments/1137360272441894962/1247518471491999774/37a31064-ae2d-46a9-9719-b8f72f5ac25c.png'
           },
-          color: 0x00ff99
+          color: 0x00ff99,
+          footer: { text: BOT_NAME }
         }
       ]
     });
   }
 });
 
-// /aktif komutu (Slash)
+// ===== /aktif komutu (Slash) =====
 client.on('interactionCreate', async (interaction) => {
   if (!interaction.isChatInputCommand()) return;
-
   if (interaction.commandName === 'aktif') {
     try {
       const state = await Gamedig.query({
         type: 'csgo',
-        host: '185.193.165.33',
-        port: 27015
+        host: SERVER_HOST,
+        port: SERVER_PORT
       });
-
       const players = state.players.length;
       const maxPlayers = state.maxplayers;
-
       await interaction.reply({
-        content: `@here\n<a:tada:1346882004460765286> **Sunucumuz Aktif!** <a:tada:1346882004460765286>\n***__Sunucumuz aktif durumuna geçmiş bulunmaktadır.Tüm oyuncularımızı servera bekliyoruz.__***\n\n・ **IP:** \`connect 185.193.165.33:27015\`\n🗺️ ・ **Harita:** \`${state.map}\`\n ・ **Aktif Oyuncu Sayısı:** \`${players}/${maxPlayers}\`\n\nhttps://cdn.discordapp.com/attachments/1400365334162309140/1402934398197698570/static_1.png?ex=6895b7f9&is=68946679&hm=f465bed7d2f9efe361b6ceddb844d701924bcde59ba4ff05a417ada5dbcd6931&`,
+        content: `@here\n<a:tada:1346882004460765286> **Sunucumuz Aktif!** <a:tada:1346882004460765286>\n***__Sunucumuz aktif durumuna geçmiş bulunmaktadır. Tüm oyuncularımızı servera bekliyoruz.__***\n\n・ **IP:** \`connect ${SERVER_IP_TEXT}\`\n🗺️ ・ **Harita:** \`${state.map}\`\n ・ **Aktif Oyuncu Sayısı:** \`${players}/${maxPlayers}\``,
         allowedMentions: { parse: ['everyone', 'users', 'roles'], repliedUser: false }
       });
     } catch (error) {
@@ -93,7 +97,7 @@ client.on('interactionCreate', async (interaction) => {
   }
 });
 
-// Slash komutu Discord'a kaydet
+// ===== Slash komutu Discord'a kaydet =====
 async function registerSlashCommand() {
   const commands = [
     new SlashCommandBuilder()
@@ -114,8 +118,3 @@ async function registerSlashCommand() {
 }
 
 client.login(process.env.TOKEN);
-
-
-
-
-
